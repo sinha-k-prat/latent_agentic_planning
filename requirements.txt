@@ -1,0 +1,20 @@
+# Core
+torch>=2.2
+transformers>=4.44
+peft>=0.11
+datasets>=2.19
+accelerate>=0.30
+omegaconf>=2.3
+numpy>=1.24
+
+# Optional: 4-bit local judge
+bitsandbytes>=0.43 ; platform_system == "Linux"
+
+# Optional: API judge
+anthropic>=0.40
+
+# Optional: logging
+wandb>=0.17
+
+# Tests
+pytest>=8.0

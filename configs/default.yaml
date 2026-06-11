@@ -1,0 +1,93 @@
+# Latent Planner–Executor RL pipeline — default config.
+# Override any field on the CLI:  python -m src.train plan.K=256 train.steps=200
+seed: 0
+device: cuda            # cuda | mps | cpu
+
+model:
+  base: Qwen/Qwen2.5-1.5B-Instruct
+  judge: Qwen/Qwen2.5-7B-Instruct
+  share_base: true          # executor == planner with LoRA disabled (one model in memory)
+  full_finetune: false      # if true, train all backbone params instead of LoRA
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  lora_target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+  gradient_checkpointing: true
+
+plan:
+  plan_mode: gumbel_codebook   # gumbel_codebook | vq_codebook | hard_text
+  N: 16                        # number of latent plan slots (prefix length)
+  K: 512                       # codebook size
+  d_code: null                 # null -> executor hidden size
+  system_prompt: "You are a helpful assistant."
+  gumbel:
+    tau_start: 1.0
+    tau_end: 0.1
+    tau_anneal_steps: 800      # exponential decay over this many steps
+  vq:
+    beta: 0.25                 # commitment loss weight
+    ema: true                  # EMA codebook updates (no codebook grad)
+    ema_decay: 0.99
+    dead_code_steps: 50        # reinit a code unused for this many steps
+    usage_log_every: 25
+  hard_text:
+    max_plan_tokens: 48
+
+train:
+  bf16: true
+  batch_size: 8                # B instructions per step
+  group_size: 8                # G rollouts per instruction (group baseline)
+  max_new_tokens: 384
+  exec_temperature: 0.9
+  exec_top_p: 1.0
+  gen_microbatch: 16           # rollouts generated per forward
+  micro_rollouts: 2            # rollouts teacher-forced (with grad) per accumulation step
+  steps: 1000
+  lr: 1.0e-4
+  weight_decay: 0.0
+  grad_clip: 1.0
+  warmup_steps: 50
+  lambda_kl: 0.05
+  kl_batch: 4                  # calibration minibatch per step
+  adv_eps: 1.0e-6
+  zero_var_skip: true
+
+data:
+  dataset: yahma/alpaca-cleaned
+  n_train: 10000
+  n_eval: 500
+  n_calib: 1000
+  max_prompt_tokens: 512
+  cache_dir: data_cache
+  split_path: data_cache/splits.json
+
+judge:
+  kind: local                  # local | stub | api
+  batch_size: 8
+  load_in_4bit: true
+  max_new_tokens: 8
+  cache_path: judge_cache.json
+  api:
+    model: claude-opus-4-8     # default per Anthropic guidance; swap to a cheaper model if desired
+    max_tokens: 8
+
+logging:
+  wandb: false
+  project: latent-agentic-planning
+  out_dir: runs/default
+  csv: true
+  log_every: 1
+  jsonl_every: 50
+  ckpt_every: 100
+  eval_every: 200
+
+# --smoke-test overrides these onto the config above
+smoke:
+  model_base: Qwen/Qwen2.5-0.5B-Instruct
+  model_judge: Qwen/Qwen2.5-0.5B-Instruct
+  n_instructions: 32
+  G: 4
+  N: 8
+  K: 64
+  steps: 10
+  judge_kind: stub

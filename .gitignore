@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+runs/
+data_cache/
+judge_cache.json
+wandb/
+*.pt
+checkpoints/
+.DS_Store
