@@ -112,7 +112,6 @@ for step in range(1, STEPS + 1):
 # ---- plot ----
 fig, ax = plt.subplots(1, 2, figsize=(11, 4))
 ax[0].plot(hist["step"], hist["plan_grad"], label="|p.grad|  (signal into plan vectors)")
-ax[0].plot(hist["step"], hist["codebook_grad"], label="|codebook.grad|")
 ax[0].plot(hist["step"], hist["head_grad"], label="|plan_head.grad|")
 ax[0].set_xlabel("step"); ax[0].set_ylabel("grad L2 norm")
 ax[0].set_title("Gradient signal through the FROZEN executor")
