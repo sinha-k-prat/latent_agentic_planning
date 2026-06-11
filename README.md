@@ -1,5 +1,10 @@
 # latent_agentic_planning
 
+![tests](https://img.shields.io/badge/tests-14%20passing-brightgreen)
+![python](https://img.shields.io/badge/python-3.8%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.2-ee4c2c)
+![RL](https://img.shields.io/badge/RL-judge--reward-8a2be2)
+
 A latent **Planner–Executor** RL pipeline on a small Qwen model. A trainable **Planner**
 emits a short sequence of latent *plan vectors* drawn from a learned codebook (not natural
 language). A **frozen Executor** (the same base model, LoRA disabled) consumes the plan
