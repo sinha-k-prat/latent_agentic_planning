@@ -1,0 +1,22 @@
+{
+  "train": [
+    {"instruction": "List the planets of the solar system, then write two sentences about the largest.", "target": "Plan: 1) list the items 2) find the largest 3) describe it. Planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune. The largest is Jupiter, a gas giant with a swirling Great Red Spot. Jupiter is more massive than all the other planets combined."},
+    {"instruction": "List the primary colors, then explain how to make orange.", "target": "Plan: 1) list the items 2) pick the relevant ones 3) explain. Primary colors: red, blue, yellow. To make orange, mix red and yellow; more red gives a deeper orange and more yellow a lighter one."},
+    {"instruction": "Name the parts of a plant, then write two sentences about the part that makes food.", "target": "Plan: 1) list the items 2) find the relevant part 3) describe it. Parts: roots, stem, leaves, flowers. The leaves make the plant's food. Through photosynthesis they turn sunlight, water, and carbon dioxide into sugar."},
+    {"instruction": "List three sorting algorithms, then briefly describe the fastest on average.", "target": "Plan: 1) list the items 2) pick the fastest 3) describe it. Algorithms: bubble sort, insertion sort, quicksort. Quicksort is fastest on average at O(n log n); it picks a pivot, partitions around it, and recursively sorts the halves."},
+    {"instruction": "List the states of matter, then write two sentences about the one with no fixed shape or volume.", "target": "Plan: 1) list the items 2) find the one that matches 3) describe it. States: solid, liquid, gas. The gas has no fixed shape or volume. It spreads to fill any container and can be compressed."},
+    {"instruction": "List the seasons of the year, then write two sentences about the coldest.", "target": "Plan: 1) list the items 2) find the coldest 3) describe it. Seasons: spring, summer, autumn, winter. Winter is the coldest. Days are short and temperatures drop, often bringing snow and ice."},
+    {"instruction": "List the continents, then write two sentences about the largest.", "target": "Plan: 1) list the items 2) find the largest 3) describe it. Continents: Africa, Antarctica, Asia, Australia, Europe, North America, South America. The largest is Asia. It holds the most land area and the most people of any continent."},
+    {"instruction": "List the five senses, then write two sentences about the one used for seeing.", "target": "Plan: 1) list the items 2) find the relevant one 3) describe it. Senses: sight, hearing, smell, taste, touch. Sight is used for seeing. The eyes detect light and send signals to the brain, which builds the images we perceive."}
+  ],
+  "eval": [
+    {"instruction": "List the parts of the human body, then write two sentences about the largest organ.", "target": "Plan: 1) list the items 2) find the largest organ 3) describe it. Parts: head, neck, arms, chest, abdomen, legs, skin. The largest organ is the skin. It covers the whole body, guards against germs and injury, and helps control temperature."},
+    {"instruction": "List the oceans of the Earth, then write two sentences about the largest.", "target": "Plan: 1) list the items 2) find the largest 3) describe it. Oceans: Pacific, Atlantic, Indian, Southern, Arctic. The largest is the Pacific Ocean. It covers about a third of Earth's surface and is the deepest ocean."},
+    {"instruction": "List the basic arithmetic operations, then write two sentences about the one that splits a number into equal parts.", "target": "Plan: 1) list the items 2) find the one that matches 3) describe it. Operations: addition, subtraction, multiplication, division. Division splits a number into equal parts. It is the inverse of multiplication and tells how many times one number fits into another."},
+    {"instruction": "List three programming languages, then write two sentences about the one best known for data science.", "target": "Plan: 1) list the items 2) find the relevant one 3) describe it. Languages: Python, Java, C++. Python is best known for data science. Its libraries such as pandas and scikit-learn make analysis and machine learning straightforward."}
+  ],
+  "calib": [
+    {"instruction": "Define photosynthesis in one sentence.", "target": ""},
+    {"instruction": "What is gravity? One sentence.", "target": ""}
+  ]
+}
