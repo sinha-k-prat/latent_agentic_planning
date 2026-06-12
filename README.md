@@ -40,6 +40,24 @@ To make the estimator exact under microbatching, the plan is **recomputed with g
 in the loss pass from the *same* Gumbel noise used at generation time (`src/rollout.py` →
 `src/losses.py`).
 
+## Two training modes (`train.loss_mode`)
+
+RL is only needed because there are **no target tokens** — the judge gives a non-differentiable
+scalar on a self-sampled response. If you *do* have gold targets `y*` (a reference response or a
+distilled step-by-step trace), use **cross-entropy** instead — same grad-through-frozen-executor
+path, but with gold tokens and weight 1:
+
+| mode | tokens fed to executor | weight | needs |
+|---|---|---|---|
+| `rl` (default) | `y` **sampled** from executor | advantage `A` | a judge |
+| `ce` | `y*` **gold** (teacher-forced) | `1` | a dataset with targets |
+
+So REINFORCE is "cross-entropy on self-sampled tokens, reweighted by advantage." CE is
+zero-variance, faster, judge-free — the better path for teaching a small model multi-step
+behavior by distilling step-by-step traces (e.g. `data.dataset=Open-Orca/OpenOrca`). The frozen
+executor and the Gumbel codebook are identical in both modes; only the outer loss changes
+(`src/losses.py:ce_loss_and_backward`). You can pretrain with `ce`, then fine-tune with `rl`.
+
 ## Plan modes (`plan.plan_mode`)
 
 - **`gumbel_codebook`** (default): codebook `C∈R^{K×d}` (trainable); plan head emits N×K
@@ -77,6 +95,11 @@ python -m src.train
 # Override anything via dotlist:
 python -m src.train plan.plan_mode=vq_codebook plan.K=256 train.steps=500
 python -m src.train judge.kind=api judge.api.model=claude-opus-4-8   # Anthropic judge
+
+# Cross-entropy distillation on multi-step data (no judge, no rollout): teacher-force gold
+# targets through the frozen executor and minimize NLL. Best recipe for multi-step behavior.
+python -m src.train train.loss_mode=ce data.dataset=Open-Orca/OpenOrca data.streaming=true \
+                    train.lambda_kl=0.0 logging.eval_every=999999
 
 # Evaluate a checkpoint is done automatically every eval_every steps; standalone eval:
 python -m src.inference --ckpt runs/default/checkpoints/best --question "Explain backprop." --judge

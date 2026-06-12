@@ -119,3 +119,55 @@ def kl_anchor_loss(bundle, calib_items, cfg):
         total = total + kl
         n += 1
     return total / max(1, n)
+
+
+def ce_loss_and_backward(bundle, plan_gen, instructions, targets, cfg, tau):
+    """Cross-entropy (distillation) loss: teacher-force the GOLD target y* through the
+    frozen executor and maximize log P_E(y* | x, p). Same grad-through-frozen-executor
+    path as the RL loss, but with gold tokens and weight 1 (no sampling, no judge, no
+    advantage). Backprops into the plan vectors / codebook / planner; executor frozen.
+
+    instructions: list[str], targets: list[str] (same length). Returns logging scalars.
+    """
+    tok = bundle.tokenizer
+    eos = tok.eos_token_id
+    mode = cfg.plan.plan_mode
+    sysp = cfg.plan.system_prompt
+
+    # Pre-tokenize targets (truncate; append EOS so the model learns to stop).
+    tgt_ids = []
+    for t in targets:
+        ids = tok(t, add_special_tokens=False).input_ids[: cfg.train.max_new_tokens]
+        tgt_ids.append(torch.tensor((ids or [eos]) + [eos], dtype=torch.long))
+
+    total, n, plan_gnorm, nbatches, total_commit = 0.0, 0, 0.0, 0, 0.0
+    last_aux = None
+    for mb in microbatches(range(len(instructions)), cfg.train.micro_rollouts):
+        sub_instr = [instructions[j] for j in mb]
+        noise = plan_gen.sample_gumbel(len(mb)) if mode == "gumbel_codebook" else None
+        p, aux = plan_gen.compute_plans(sub_instr, noise=noise, tau=tau)
+        p.retain_grad()
+        last_aux = aux
+        commit = aux.get("commit_loss")
+        loss = torch.zeros((), device=bundle.device)
+        for k, j in enumerate(mb):
+            prefix, plen = build_one_prefix(bundle, instructions[j], p[k], sysp)
+            loss = loss - _response_logprob(bundle, prefix, plen, tgt_ids[j])  # NLL of gold y*
+        loss = loss / len(mb)
+        if commit is not None:
+            loss = loss + commit
+            total_commit += float(commit.item()) * len(mb)
+        loss.backward()
+        if p.grad is not None:
+            plan_gnorm += float(p.grad.detach().float().norm().item())
+        total += float(loss.item()) * len(mb)
+        n += len(mb)
+        nbatches += 1
+
+    return {
+        "ce_loss": total / max(1, n),
+        "commit_loss": total_commit / max(1, n),
+        "plan_grad_norm": plan_gnorm / max(1, nbatches),
+        "n": n,
+        "aux": last_aux,
+    }

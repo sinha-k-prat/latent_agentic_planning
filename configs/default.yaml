@@ -43,6 +43,7 @@ train:
   gen_microbatch: 16           # rollouts generated per forward
   micro_rollouts: 2            # rollouts teacher-forced (with grad) per accumulation step
   steps: 1000
+  loss_mode: rl                # rl (judge reward, no targets) | ce (cross-entropy on gold targets)
   lr: 1.0e-4
   weight_decay: 0.0
   grad_clip: 1.0
@@ -53,7 +54,8 @@ train:
   zero_var_skip: true
 
 data:
-  dataset: yahma/alpaca-cleaned
+  dataset: yahma/alpaca-cleaned   # CE multi-step recipe: Open-Orca/OpenOrca (set streaming:true)
+  streaming: false                # stream + early-stop for big datasets (OpenOrca ~4M rows)
   n_train: 10000
   n_eval: 500
   n_calib: 1000

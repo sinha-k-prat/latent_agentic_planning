@@ -116,7 +116,7 @@ def main():
     import argparse
     import os
 
-    from .data import build_or_load_splits
+    from .data import build_or_load_splits, split_instructions
     from .inference import load_for_inference
     from .judge import build_judge
     from .utils import get_device, load_config
@@ -133,7 +133,7 @@ def main():
     device = get_device(cfg)
     bundle, plan_gen = load_for_inference(cfg, args.ckpt, device)
     judge = build_judge(cfg, device)
-    instructions = build_or_load_splits(cfg, bundle.tokenizer)["eval"][: args.n]
+    instructions = split_instructions(build_or_load_splits(cfg, bundle.tokenizer)["eval"])[: args.n]
 
     res = run_eval(bundle, plan_gen, judge, instructions, cfg)
     md = _markdown(res, cfg, len(instructions))
