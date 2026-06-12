@@ -83,3 +83,66 @@ def run_eval(bundle, plan_gen, judge, instructions, cfg):
             results["plan_soft"] = sum(soft_scores) / len(soft_scores)
             results["hardening_gap"] = results["plan_soft"] - results["plan_hard"]
     return results
+
+
+def _markdown(res, cfg, n):
+    rows = [
+        ("Qwen executor — original, no plan (baseline)", res.get("executor_only"), None),
+        ("Qwen + fixed strategy prompt", res.get("strategy_prompt"),
+         res.get("strategy_winrate_vs_base")),
+        ("Qwen planner + latent plan (hardened codes)", res.get("plan_hard"),
+         res.get("plan_hard_winrate_vs_base")),
+    ]
+    if "plan_soft" in res:
+        rows.append(("Qwen planner + latent plan (soft)", res.get("plan_soft"), None))
+    out = [
+        f"# Comparison — plan_mode={cfg.plan.plan_mode}, n={n}, judge={cfg.judge.kind}",
+        "",
+        "| Condition | Mean judge score | Win-rate vs executor |",
+        "|---|---|---|",
+    ]
+    for name, score, wr in rows:
+        if score is None:
+            continue
+        out.append(f"| {name} | {score:.4f} | {('%.3f' % wr) if wr is not None else '—'} |")
+    if "hardening_gap" in res:
+        out += ["", f"Soft→hard hardening gap: {res['hardening_gap']:.4f}"]
+    out += ["", "_Caveat: same-judge eval favours reward hacking; report a second judge "
+            "(judge.kind=api) for a sanity cross-check._"]
+    return "\n".join(out) + "\n"
+
+
+def main():
+    import argparse
+    import os
+
+    from .data import build_or_load_splits
+    from .inference import load_for_inference
+    from .judge import build_judge
+    from .utils import get_device, load_config
+
+    ap = argparse.ArgumentParser(description="Three-way comparison from a trained checkpoint.")
+    ap.add_argument("--config", default="configs/default.yaml")
+    ap.add_argument("--ckpt", default="runs/default/checkpoints/best")
+    ap.add_argument("--n", type=int, default=200, help="held-out eval instructions")
+    ap.add_argument("--out", default="results/comparison.md")
+    ap.add_argument("overrides", nargs="*")
+    args = ap.parse_args()
+
+    cfg = load_config(args.config, overrides=args.overrides)
+    device = get_device(cfg)
+    bundle, plan_gen = load_for_inference(cfg, args.ckpt, device)
+    judge = build_judge(cfg, device)
+    instructions = build_or_load_splits(cfg, bundle.tokenizer)["eval"][: args.n]
+
+    res = run_eval(bundle, plan_gen, judge, instructions, cfg)
+    md = _markdown(res, cfg, len(instructions))
+    os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
+    with open(args.out, "w") as f:
+        f.write(md)
+    print(md)
+    print("saved", args.out)
+
+
+if __name__ == "__main__":
+    main()
