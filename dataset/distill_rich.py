@@ -51,6 +51,7 @@ class LocalTeacher:
             from transformers import BitsAndBytesConfig
             kw["quantization_config"] = BitsAndBytesConfig(
                 load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_quant_type="nf4")
+            kw["device_map"] = "auto"   # 4-bit must place at load time; cannot .to() afterwards
         self.model = AutoModelForCausalLM.from_pretrained(model, **kw)
         if "quantization_config" not in kw:
             self.model.to(device)
