@@ -1,0 +1,278 @@
+{
+  "n_ops": 64,
+  "eop_id": 64,
+  "families": {
+    "GROUND": [
+      {
+        "id": 0,
+        "name": "IDENTIFY_TASK"
+      },
+      {
+        "id": 1,
+        "name": "PARSE_INPUT"
+      },
+      {
+        "id": 2,
+        "name": "EXTRACT_ENTITIES"
+      },
+      {
+        "id": 3,
+        "name": "EXTRACT_NUMBERS"
+      },
+      {
+        "id": 4,
+        "name": "EXTRACT_CONSTRAINTS"
+      },
+      {
+        "id": 5,
+        "name": "IDENTIFY_KEYWORDS"
+      },
+      {
+        "id": 6,
+        "name": "SEGMENT_TEXT"
+      },
+      {
+        "id": 7,
+        "name": "DETECT_LANGUAGE"
+      }
+    ],
+    "RECALL": [
+      {
+        "id": 8,
+        "name": "ENUMERATE"
+      },
+      {
+        "id": 9,
+        "name": "RECALL_FACTS"
+      },
+      {
+        "id": 10,
+        "name": "RETRIEVE_DEFINITION"
+      },
+      {
+        "id": 11,
+        "name": "LIST_EXAMPLES"
+      },
+      {
+        "id": 12,
+        "name": "LIST_STEPS"
+      },
+      {
+        "id": 13,
+        "name": "LIST_PROS_CONS"
+      },
+      {
+        "id": 14,
+        "name": "GENERATE_CANDIDATES"
+      },
+      {
+        "id": 15,
+        "name": "BRAINSTORM"
+      }
+    ],
+    "SELECT": [
+      {
+        "id": 16,
+        "name": "SELECT_SUPERLATIVE"
+      },
+      {
+        "id": 17,
+        "name": "FILTER_BY_CONDITION"
+      },
+      {
+        "id": 18,
+        "name": "RANK"
+      },
+      {
+        "id": 19,
+        "name": "TOP_K"
+      },
+      {
+        "id": 20,
+        "name": "PICK_BEST"
+      },
+      {
+        "id": 21,
+        "name": "SELECT_RELEVANT"
+      },
+      {
+        "id": 22,
+        "name": "DEDUP"
+      },
+      {
+        "id": 23,
+        "name": "CHOOSE_BY_CRITERIA"
+      }
+    ],
+    "COMPUTE": [
+      {
+        "id": 24,
+        "name": "COMPUTE_ARITHMETIC"
+      },
+      {
+        "id": 25,
+        "name": "SORT"
+      },
+      {
+        "id": 26,
+        "name": "AGGREGATE"
+      },
+      {
+        "id": 27,
+        "name": "CONVERT_UNITS"
+      },
+      {
+        "id": 28,
+        "name": "MAP_TRANSFORM"
+      },
+      {
+        "id": 29,
+        "name": "NORMALIZE"
+      },
+      {
+        "id": 30,
+        "name": "COUNT"
+      },
+      {
+        "id": 31,
+        "name": "ROUND_ESTIMATE"
+      }
+    ],
+    "REASON": [
+      {
+        "id": 32,
+        "name": "COMPARE"
+      },
+      {
+        "id": 33,
+        "name": "CLASSIFY"
+      },
+      {
+        "id": 34,
+        "name": "EVALUATE_CONDITION"
+      },
+      {
+        "id": 35,
+        "name": "INFER_CAUSE"
+      },
+      {
+        "id": 36,
+        "name": "DECOMPOSE"
+      },
+      {
+        "id": 37,
+        "name": "DEDUCE"
+      },
+      {
+        "id": 38,
+        "name": "CHECK_LOGIC"
+      },
+      {
+        "id": 39,
+        "name": "ESTIMATE"
+      }
+    ],
+    "GENERATE": [
+      {
+        "id": 40,
+        "name": "WRITE_SENTENCE"
+      },
+      {
+        "id": 41,
+        "name": "WRITE_PARAGRAPH"
+      },
+      {
+        "id": 42,
+        "name": "WRITE_CODE"
+      },
+      {
+        "id": 43,
+        "name": "GIVE_EXAMPLE"
+      },
+      {
+        "id": 44,
+        "name": "CONSTRUCT_ANALOGY"
+      },
+      {
+        "id": 45,
+        "name": "DRAFT_OUTLINE"
+      },
+      {
+        "id": 46,
+        "name": "COMPOSE_MESSAGE"
+      },
+      {
+        "id": 47,
+        "name": "GENERATE_QUESTION"
+      }
+    ],
+    "VERIFY": [
+      {
+        "id": 48,
+        "name": "VERIFY_FORMAT"
+      },
+      {
+        "id": 49,
+        "name": "CHECK_CONSTRAINT"
+      },
+      {
+        "id": 50,
+        "name": "FACT_CHECK"
+      },
+      {
+        "id": 51,
+        "name": "CRITIQUE"
+      },
+      {
+        "id": 52,
+        "name": "REVISE"
+      },
+      {
+        "id": 53,
+        "name": "VALIDATE_NUMBER"
+      },
+      {
+        "id": 54,
+        "name": "SELF_CORRECT"
+      },
+      {
+        "id": 55,
+        "name": "SUMMARIZE_CHECK"
+      }
+    ],
+    "COMMUNICATE": [
+      {
+        "id": 56,
+        "name": "SUMMARIZE"
+      },
+      {
+        "id": 57,
+        "name": "EXPLAIN_SIMPLE"
+      },
+      {
+        "id": 58,
+        "name": "FORMAT_LIST"
+      },
+      {
+        "id": 59,
+        "name": "FORMAT_TABLE"
+      },
+      {
+        "id": 60,
+        "name": "FORMAT_JSON"
+      },
+      {
+        "id": 61,
+        "name": "ADAPT_TONE"
+      },
+      {
+        "id": 62,
+        "name": "ADD_CAVEAT"
+      },
+      {
+        "id": 63,
+        "name": "CONCLUDE"
+      }
+    ]
+  }
+}
