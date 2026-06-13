@@ -154,6 +154,7 @@ def main():
     ap.add_argument("--accum", type=int, default=4)
     ap.add_argument("--patience", type=int, default=3)
     ap.add_argument("--base", default="Qwen/Qwen2.5-0.5B-Instruct")
+    ap.add_argument("--data", default=DATA, help="jsonl corpus (e.g. dataset/plan_dataset_rich.jsonl)")
     ap.add_argument("--device", default="cpu")
     args = ap.parse_args()
 
@@ -162,13 +163,16 @@ def main():
         "train.bf16=false", f"device={args.device}",
     ])
     set_seed(cfg.seed)
-    rows = [json.loads(l) for l in open(DATA)]
+    rows = [json.loads(l) for l in open(args.data)]
     random.Random(0).shuffle(rows)
     train = rows[:args.train]
     held = rows[args.train:args.train + args.held]
     calib_rows = rows[args.train + args.held:args.train + args.held + args.calib]
     print(f"train {len(train)} | held {len(held)} | calib {len(calib_rows)} | "
           f"lam_kl {args.lam_kl} | base {args.base} | device {args.device}")
+    if args.lam_kl > 0 and not calib_rows:
+        print("[warn] calibration set is EMPTY (train+held+calib exceeds dataset size) -> "
+              "KL anchor is DISABLED. Lower --train/--held/--calib so they sum to <= dataset size.")
 
     bundle = ModelBundle(cfg, get_device(cfg))
     tok = bundle.tokenizer
